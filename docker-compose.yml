@@ -1,0 +1,50 @@
+version: "3"
+services:
+  backend-file-server:
+    image: file-server
+    container_name: file-server-container
+    build:
+      context: .
+    restart: on-failure
+    volumes:
+      - "./word/:/app/word/"
+    depends_on: 
+      - mongodb
+    networks:
+      - file-net
+    ports: 
+      - "3000:3000"
+  mongodb:
+    image: mongo:4.2
+    container_name: mongodb
+    restart: on-failure
+    env_file: ./mongo_env
+    volumes: 
+      - ./mongo-data:/data/db
+    networks:
+      - file-net
+  mongo-express:
+    image: mongo-express:0.54.0
+    container_name: mongo-express
+    depends_on:
+      - mongodb
+    networks:
+      - file-net
+    env_file: ./mongo-express_env 
+  nginx:
+    image: nginx:1.21
+    container_name: nginx_proxy
+    restart: on-failure
+    depends_on:
+      - backend
+    networks:
+      - file-net
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    volumes:
+      - ./conf.d/:/etc/nginx/conf.d/
+networks:
+  file-net:
+
+    

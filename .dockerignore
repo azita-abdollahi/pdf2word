@@ -1,0 +1,7 @@
+*_env
+mongo-express-data/
+node_modules/
+mongo-data/
+conf.d/
+docker-compose.yml
+Dockerfile
